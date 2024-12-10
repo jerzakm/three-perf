@@ -1,51 +1,47 @@
+// @ts-nocheck
 
-export const isUUID = ( uuid: string ) : boolean => {
+export const isUUID = (uuid: string): boolean => {
+  let s: any = "" + uuid;
 
-    let s: any = '' + uuid;
+  s = s.match(
+    "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+  );
 
-    s = s.match( '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$' );
+  if (s === null) {
+    return false;
+  }
 
-    if ( s === null ) {
-
-        return false;
-
-    }
-
-    return true;
-
+  return true;
 };
 
-export const addMuiPerfID = ( material: THREE.Material, currentObjectWithMaterials: any ) : string => {
+export const addMuiPerfID = (
+  material: THREE.Material,
+  currentObjectWithMaterials: any
+): string => {
+  if (!material.defines) {
+    material.defines = {};
+  }
 
-    if ( ! material.defines ) {
+  if (material.defines && !material.defines.muiPerf) {
+    material.defines = Object.assign(material.defines || {}, {
+      muiPerf: material.uuid,
+    });
+  }
 
-        material.defines = {};
+  const uuid = material.uuid;
 
-    }
+  if (!currentObjectWithMaterials[uuid]) {
+    currentObjectWithMaterials[uuid] = {
+      meshes: {},
+      material: material,
+    };
 
-    if ( material.defines && !material.defines.muiPerf ) {
+    material.needsUpdate = true;
+  }
 
-        material.defines = Object.assign( material.defines || {}, { muiPerf: material.uuid } );
+  material.needsUpdate = false;
 
-    }
-
-    const uuid = material.uuid;
-
-    if ( ! currentObjectWithMaterials[ uuid ] ) {
-
-        currentObjectWithMaterials[ uuid ] = {
-            meshes: {},
-            material: material,
-        };
-
-        material.needsUpdate = true;
-
-    }
-
-    material.needsUpdate = false;
-
-    return uuid;
-
+  return uuid;
 };
 
-export const getMUIIndex = (muid: string) => muid === 'muiPerf';
+export const getMUIIndex = (muid: string) => muid === "muiPerf";
